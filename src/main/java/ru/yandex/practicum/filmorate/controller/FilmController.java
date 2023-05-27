@@ -16,7 +16,7 @@ public class FilmController {
     private int id = 0;
 
     @GetMapping("/films")
-    public HashMap getFilms(){
+    public HashMap<Integer, Film> getFilms() {
         return films;
     }
 
@@ -42,7 +42,7 @@ public class FilmController {
         validation(film);
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
-        }else {
+        } else {
             log.debug("Такого фильма нет");
             throw new ValidationException("Такого фильма нет");
         }
@@ -53,25 +53,25 @@ public class FilmController {
     private void validation(Film film) throws ValidationException {
         LocalDate oldDate = LocalDate.of(1965, 12, 28);
         LocalDate filmDate = film.getReleaseDate();
-        if (film.getName() == null || film.getName().isBlank()){
+        if (film.getName() == null || film.getName().isBlank()) {
             log.debug("Пустое название фильма");
             throw new ValidationException("Название фильма пустое");
         }
-        if (film.getDescription() == null || film.getDescription().length() > 200){
+        if (film.getDescription() == null || film.getDescription().length() > 200) {
             log.debug("Описание превышает лимит символов");
             throw new ValidationException("Описание превышает лимит символов");
         }
-        if (filmDate == null || filmDate.isBefore(oldDate) || filmDate.isAfter(LocalDate.now())){
+        if (filmDate == null || filmDate.isBefore(oldDate) || filmDate.isAfter(LocalDate.now())) {
             log.debug("Дата фильма некорректна");
             throw new ValidationException("Дата фильма некорректна");
         }
-        if (film.getDuration() <= 0){
+        if (film.getDuration() <= 0) {
             log.debug("Продолжительность не может быть отрицательной");
             throw new ValidationException("Продолжительность не может быть отрицательной");
         }
     }
 
-    private int generateID(){
+    private int generateID() {
         id++;
         return id;
     }

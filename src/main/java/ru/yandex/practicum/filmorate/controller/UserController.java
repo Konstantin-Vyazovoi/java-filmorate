@@ -16,64 +16,64 @@ public class UserController {
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/users")
-    public HashMap<Integer, User> getUsers(){
+    public HashMap<Integer, User> getUsers() {
         return users;
     }
 
     @PutMapping(value = "/users")
     public User update(@RequestBody User user) throws ValidationException {
 
-            validation(user);
-            if (users.containsKey(user.getId())) {
-                users.put(user.getId(), user);
-            }else {
-                log.debug("Некорректный id пользователя");
-                throw new ValidationException("Такого пользователя нет");
-            }
+        validation(user);
+        if (users.containsKey(user.getId())) {
+            users.put(user.getId(), user);
+        } else {
+            log.debug("Некорректный id пользователя");
+            throw new ValidationException("Такого пользователя нет");
+        }
         log.trace("Пользователь обновлён");
         return user;
     }
 
     @PostMapping(value = "/users")
     public User add(@RequestBody User user) throws ValidationException {
-            validation(user);
-            User newUser = User.builder()
-                    .id(generateID())
-                    .login(user.getLogin())
-                    .email(user.getEmail())
-                    .name(user.getName())
-                    .birthday(user.getBirthday())
-                    .build();
-            users.put(newUser.getId(), newUser);
-            log.trace("Добавлен новый пользователь");
+        validation(user);
+        User newUser = User.builder()
+                .id(generateID())
+                .login(user.getLogin())
+                .email(user.getEmail())
+                .name(user.getName())
+                .birthday(user.getBirthday())
+                .build();
+        users.put(newUser.getId(), newUser);
+        log.trace("Добавлен новый пользователь");
         return newUser;
     }
 
     private void validation(User user) throws ValidationException {
-        if (stringValidation(user.getLogin())){
+        if (stringValidation(user.getLogin())) {
             log.debug("Не корректный логин");
             throw new ValidationException("Не корректный логин");
         }
-        if (user.getEmail() == null || stringValidation(user.getEmail()) || !user.getEmail().contains("@")){
+        if (user.getEmail() == null || stringValidation(user.getEmail()) || !user.getEmail().contains("@")) {
             log.debug("Не корректная электронная почта");
             throw new ValidationException("Не корректная электронная почта");
         }
-        if (user.getName() == null){
+        if (user.getName() == null) {
             user.setName(user.getLogin());
-        }else if (user.getName().isBlank()){
+        } else if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())){
+        if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())) {
             log.debug("Не корректная дата рождения");
             throw new ValidationException("Не корректная дата рождения");
         }
     }
 
-    private boolean stringValidation(String string){
+    private boolean stringValidation(String string) {
         return string == null || string.isBlank() || string.contains(" ");
     }
 
-    private int generateID(){
+    private int generateID() {
         id++;
         return id;
     }

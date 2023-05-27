@@ -29,19 +29,15 @@ class FilmControllerTests {
 	}
 
 	@Test
-	void addNewFilmWithoutName() throws ValidationException {
+	void addNewFilmWithoutName(){
 		Film film = Film.builder()
 				.description("test description")
 				.releaseDate(LocalDate.of(2006,2,12))
 				.duration(1000000)
 				.build();
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.add(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.add(film));
 		film.setName(" ");
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.add(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.add(film));
 	}
 
 	@Test
@@ -51,15 +47,11 @@ class FilmControllerTests {
 				.releaseDate(LocalDate.of(2006,2,12))
 				.duration(1000000)
 				.build();
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.add(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.add(film));
 		film.setDescription("somedescripsomedescripsomedescripsomedescripsomedescripsomedescripsomedescripsomedescrip" +
 				"somedescripsomedescripsomedescripsomedescripsomedescripsomedescripsomedescripsomedescripsomedescrip" +
 				"somedescripsomedescripsomedescripsomedescrip");
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.add(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.add(film));
 	}
 
 	@Test
@@ -69,13 +61,9 @@ class FilmControllerTests {
 				.name("test film")
 				.releaseDate(LocalDate.of(2006,2,12))
 				.build();
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.add(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.add(film));
 		film.setDuration(-1);
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.add(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.add(film));
 	}
 
 	@Test
@@ -85,17 +73,11 @@ class FilmControllerTests {
 				.name("test film")
 				.duration(1000000)
 				.build();
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.add(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.add(film));
 		film.setReleaseDate(LocalDate.of(2100, 3, 5));
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.add(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.add(film));
 		film.setReleaseDate(LocalDate.of(1980, 11, 5));
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.add(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.add(film));
 	}
 
 	@Test
@@ -121,9 +103,7 @@ class FilmControllerTests {
 				.duration(1000000)
 				.build();
 		filmController.add(film);
-		Assertions.assertThrows(ValidationException.class,()-> {
-			filmController.update(film);
-		});
+		Assertions.assertThrows(ValidationException.class,()-> filmController.update(film));
 	}
 
 }

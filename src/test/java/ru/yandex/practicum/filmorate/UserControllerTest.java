@@ -51,13 +51,9 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(2000,12,20))
                 .name("somename")
                 .build();
-        Assertions.assertThrows(ValidationException.class,()-> {
-            userController.add(user);
-        });
+        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
         user.setLogin(" login incorrect");
-        Assertions.assertThrows(ValidationException.class,()-> {
-            userController.add(user);
-        });
+        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
     }
 
     @Test
@@ -67,13 +63,9 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(2000,12,20))
                 .name("somename")
                 .build();
-        Assertions.assertThrows(ValidationException.class,()-> {
-            userController.add(user);
-        });
+        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
         user.setEmail("Email");
-        Assertions.assertThrows(ValidationException.class,()-> {
-            userController.add(user);
-        });
+        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
     }
 
     @Test
@@ -83,13 +75,9 @@ public class UserControllerTest {
                 .email("email@mail.ru")
                 .name("somename")
                 .build();
-        Assertions.assertThrows(ValidationException.class,()-> {
-            userController.add(user);
-        });
+        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
         user.setBirthday(LocalDate.of(2077, 12, 12));
-        Assertions.assertThrows(ValidationException.class,()-> {
-            userController.add(user);
-        });
+        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
     }
 
     @Test
@@ -115,8 +103,6 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(2000,12,20))
                 .build();
         userController.add(user);
-        Assertions.assertThrows(ValidationException.class,()-> {
-            userController.update(user);
-        });
+        Assertions.assertThrows(ValidationException.class,()-> userController.update(user));
     }
 }
