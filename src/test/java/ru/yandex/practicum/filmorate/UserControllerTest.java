@@ -19,7 +19,7 @@ public class UserControllerTest {
 
     @Test
     void addNewUser() throws ValidationException {
-        assertTrue(userController.getUsers().isEmpty());
+        assertTrue(userController.getUsersMap().isEmpty());
         User user = User.builder()
                 .login("login")
                 .email("email@mail.ru")
@@ -27,7 +27,7 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(2000, 12, 20))
                 .build();
         userController.add(user);
-        assertTrue(userController.getUsers().containsKey(1));
+        assertTrue(userController.getUsersMap().containsKey(1));
     }
 
     @Test

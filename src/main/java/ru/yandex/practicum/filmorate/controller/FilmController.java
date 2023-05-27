@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.excption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @RestController
@@ -16,8 +17,8 @@ public class FilmController {
     private int id = 0;
 
     @GetMapping("/films")
-    public HashMap<Integer, Film> getFilms() {
-        return films;
+    public ArrayList<Film> getFilms() {
+        return new ArrayList<>(films.values());
     }
 
     @PostMapping("/films")
@@ -51,7 +52,7 @@ public class FilmController {
     }
 
     private void validation(Film film) throws ValidationException {
-        LocalDate oldDate = LocalDate.of(1985, 12, 28);
+        LocalDate oldDate = LocalDate.of(1965, 12, 28);
         LocalDate filmDate = film.getReleaseDate();
         if (film.getName() == null || film.getName().isBlank()) {
             log.debug("Пустое название фильма");
@@ -69,6 +70,10 @@ public class FilmController {
             log.debug("Продолжительность не может быть отрицательной");
             throw new ValidationException("Продолжительность не может быть отрицательной");
         }
+    }
+
+    public HashMap<Integer, Film> getFilmMap() {
+        return films;
     }
 
     private int generateID() {

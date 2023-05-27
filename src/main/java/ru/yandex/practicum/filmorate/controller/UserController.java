@@ -4,9 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.excption.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @RestController
@@ -16,8 +18,8 @@ public class UserController {
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/users")
-    public HashMap<Integer, User> getUsers() {
-        return users;
+    public ArrayList<User> getUsers() {
+        return new ArrayList<>(users.values());
     }
 
     @PutMapping(value = "/users")
@@ -47,6 +49,10 @@ public class UserController {
         users.put(newUser.getId(), newUser);
         log.trace("Добавлен новый пользователь");
         return newUser;
+    }
+
+    public HashMap<Integer, User> getUsersMap() {
+        return users;
     }
 
     private void validation(User user) throws ValidationException {

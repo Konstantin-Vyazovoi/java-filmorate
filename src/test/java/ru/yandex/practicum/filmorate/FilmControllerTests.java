@@ -25,7 +25,7 @@ class FilmControllerTests {
                 .duration(1000000)
                 .build();
         filmController.add(film);
-        assertTrue(filmController.getFilms().containsKey(1));
+        assertTrue(filmController.getFilmMap().containsKey(1));
     }
 
     @Test
