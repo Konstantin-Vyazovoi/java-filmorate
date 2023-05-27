@@ -16,7 +16,7 @@ public class UserController {
     private int id = 0;
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @GetMapping("/user")
+    @GetMapping("/users")
     public ArrayList<User> getUsers() {
         return new ArrayList<>(users.values());
     }
