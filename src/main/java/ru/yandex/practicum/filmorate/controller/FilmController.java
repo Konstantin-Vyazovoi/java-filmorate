@@ -11,9 +11,9 @@ import java.util.HashMap;
 
 @RestController
 public class FilmController {
-    private HashMap<Integer, Film> films = new HashMap<>();
+    private final HashMap<Integer, Film> films = new HashMap<>();
     private final Logger log = LoggerFactory.getLogger(FilmController.class);
-    private int ID = 0;
+    private int id = 0;
 
     @GetMapping("/films")
     public HashMap getFilms(){
@@ -72,7 +72,7 @@ public class FilmController {
     }
 
     private int generateID(){
-        ID++;
-        return ID;
+        id++;
+        return id;
     }
 }

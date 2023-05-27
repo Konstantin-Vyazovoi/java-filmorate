@@ -11,8 +11,8 @@ import java.util.HashMap;
 
 @RestController
 public class UserController {
-    private HashMap<Integer, User> users = new HashMap<>();
-    private int ID = 0;
+    private final HashMap<Integer, User> users = new HashMap<>();
+    private int id = 0;
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/users")
@@ -70,14 +70,11 @@ public class UserController {
     }
 
     private boolean stringValidation(String string){
-        if (string == null || string.isBlank() || string.contains(" ")){
-            return true;
-        }
-        return false;
+        return string == null || string.isBlank() || string.contains(" ");
     }
 
     private int generateID(){
-        ID++;
-        return ID;
+        id++;
+        return id;
     }
 }

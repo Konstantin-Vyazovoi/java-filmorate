@@ -9,11 +9,12 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class UserControllerTest {
-    private UserController userController = new UserController();
+    private final UserController userController = new UserController();
 
 
     @Test
@@ -37,10 +38,10 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(2000,12,20))
                 .build();
         userController.add(user);
-        assertTrue(user.getLogin().equals(user.getName()));
+        assertEquals(user.getLogin(), user.getName());
         user.setName(" ");
         userController.add(user);
-        assertTrue(user.getLogin().equals(user.getName()));
+        assertEquals(user.getLogin(), user.getName());
     }
 
     @Test

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class FilmControllerTests {
-	private FilmController filmController = new FilmController();
+	private final FilmController filmController = new FilmController();
 
 	@Test
 	void addNewFilm() throws ValidationException {
