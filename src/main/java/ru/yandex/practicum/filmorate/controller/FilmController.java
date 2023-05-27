@@ -28,16 +28,18 @@ public class FilmController {
 
     @PostMapping("/films")
     public Film add(@RequestBody Film film) throws ValidationException {
-
         validation(film);
-        Film newFilm = Film.builder()
-                .id(generateID())
-                .name(film.getName())
-                .description(film.getDescription())
-                .duration(film.getDuration())
-                .releaseDate(film.getReleaseDate())
-                .build();
-        films.put(newFilm.getId(), newFilm);
+        Film newFilm;
+        if (film.getId() == 0) {
+             newFilm = Film.builder()
+                    .id(generateID())
+                    .name(film.getName())
+                    .description(film.getDescription())
+                    .duration(film.getDuration())
+                    .releaseDate(film.getReleaseDate())
+                    .build();
+            films.put(newFilm.getId(), newFilm);
+        } else newFilm = film;
         log.trace("Добавлен новый фильм");
         return newFilm;
     }

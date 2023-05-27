@@ -43,14 +43,17 @@ public class UserController {
     @PostMapping(value = "/users")
     public User add(@RequestBody User user) throws ValidationException {
         validation(user);
-        User newUser = User.builder()
-                .id(generateID())
-                .login(user.getLogin())
-                .email(user.getEmail())
-                .name(user.getName())
-                .birthday(user.getBirthday())
-                .build();
-        users.put(newUser.getId(), newUser);
+        User newUser;
+        if (user.getId() == 0) {
+             newUser = User.builder()
+                    .id(generateID())
+                    .login(user.getLogin())
+                    .email(user.getEmail())
+                    .name(user.getName())
+                    .birthday(user.getBirthday())
+                    .build();
+            users.put(newUser.getId(), newUser);
+        } else newUser = user;
         log.trace("Добавлен новый пользователь");
         return newUser;
     }
