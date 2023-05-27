@@ -96,7 +96,7 @@ public class UserControllerTest {
     @Test
     void updateUserWithIncorrectID() throws ValidationException {
         User user = User.builder()
-                .id(10)
+                .id(0)
                 .login("login")
                 .email("email@mail.ru")
                 .name("somename")

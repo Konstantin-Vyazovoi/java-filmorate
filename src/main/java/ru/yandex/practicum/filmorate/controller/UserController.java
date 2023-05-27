@@ -45,15 +45,15 @@ public class UserController {
         validation(user);
         User newUser;
         if (user.getId() == 0) {
-             newUser = User.builder()
+            newUser = User.builder()
                     .id(generateID())
                     .login(user.getLogin())
                     .email(user.getEmail())
                     .name(user.getName())
                     .birthday(user.getBirthday())
                     .build();
-            users.put(newUser.getId(), newUser);
         } else newUser = user;
+        users.put(newUser.getId(), newUser);
         log.trace("Добавлен новый пользователь");
         return newUser;
     }

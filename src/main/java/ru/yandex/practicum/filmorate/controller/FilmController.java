@@ -31,15 +31,15 @@ public class FilmController {
         validation(film);
         Film newFilm;
         if (film.getId() == 0) {
-             newFilm = Film.builder()
+            newFilm = Film.builder()
                     .id(generateID())
                     .name(film.getName())
                     .description(film.getDescription())
                     .duration(film.getDuration())
                     .releaseDate(film.getReleaseDate())
                     .build();
-            films.put(newFilm.getId(), newFilm);
         } else newFilm = film;
+        films.put(newFilm.getId(), newFilm);
         log.trace("Добавлен новый фильм");
         return newFilm;
     }
