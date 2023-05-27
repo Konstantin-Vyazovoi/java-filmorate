@@ -76,7 +76,7 @@ class FilmControllerTests {
         Assertions.assertThrows(ValidationException.class, () -> filmController.add(film));
         film.setReleaseDate(LocalDate.of(2100, 3, 5));
         Assertions.assertThrows(ValidationException.class, () -> filmController.add(film));
-        film.setReleaseDate(LocalDate.of(1980, 11, 5));
+        film.setReleaseDate(LocalDate.of(1950, 11, 5));
         Assertions.assertThrows(ValidationException.class, () -> filmController.add(film));
     }
 
