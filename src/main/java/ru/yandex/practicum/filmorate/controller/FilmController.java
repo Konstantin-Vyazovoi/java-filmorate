@@ -51,7 +51,7 @@ public class FilmController {
     }
 
     private void validation(Film film) throws ValidationException {
-        LocalDate oldDate = LocalDate.of(1965, 12, 28);
+        LocalDate oldDate = LocalDate.of(1985, 12, 28);
         LocalDate filmDate = film.getReleaseDate();
         if (film.getName() == null || film.getName().isBlank()) {
             log.debug("Пустое название фильма");
