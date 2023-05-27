@@ -24,7 +24,7 @@ public class UserControllerTest {
                 .login("login")
                 .email("email@mail.ru")
                 .name("somename")
-                .birthday(LocalDate.of(2000,12,20))
+                .birthday(LocalDate.of(2000, 12, 20))
                 .build();
         userController.add(user);
         assertTrue(userController.getUsers().containsKey(1));
@@ -35,7 +35,7 @@ public class UserControllerTest {
         User user = User.builder()
                 .login("login")
                 .email("email@mail.ru")
-                .birthday(LocalDate.of(2000,12,20))
+                .birthday(LocalDate.of(2000, 12, 20))
                 .build();
         userController.add(user);
         assertEquals(user.getLogin(), user.getName());
@@ -45,39 +45,39 @@ public class UserControllerTest {
     }
 
     @Test
-    void addNewUserWithIncorrectLogin(){
+    void addNewUserWithIncorrectLogin() {
         User user = User.builder()
                 .email("email@mail.ru")
-                .birthday(LocalDate.of(2000,12,20))
+                .birthday(LocalDate.of(2000, 12, 20))
                 .name("somename")
                 .build();
-        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
+        Assertions.assertThrows(ValidationException.class, () -> userController.add(user));
         user.setLogin(" login incorrect");
-        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
+        Assertions.assertThrows(ValidationException.class, () -> userController.add(user));
     }
 
     @Test
-    void addNewUserWithIncorrectEmail(){
+    void addNewUserWithIncorrectEmail() {
         User user = User.builder()
                 .login("login")
-                .birthday(LocalDate.of(2000,12,20))
+                .birthday(LocalDate.of(2000, 12, 20))
                 .name("somename")
                 .build();
-        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
+        Assertions.assertThrows(ValidationException.class, () -> userController.add(user));
         user.setEmail("Email");
-        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
+        Assertions.assertThrows(ValidationException.class, () -> userController.add(user));
     }
 
     @Test
-    void addNewUserWithIncorrectBirthday(){
+    void addNewUserWithIncorrectBirthday() {
         User user = User.builder()
                 .login("login")
                 .email("email@mail.ru")
                 .name("somename")
                 .build();
-        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
+        Assertions.assertThrows(ValidationException.class, () -> userController.add(user));
         user.setBirthday(LocalDate.of(2077, 12, 12));
-        Assertions.assertThrows(ValidationException.class,()-> userController.add(user));
+        Assertions.assertThrows(ValidationException.class, () -> userController.add(user));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class UserControllerTest {
                 .login("login")
                 .email("email@mail.ru")
                 .name("somename")
-                .birthday(LocalDate.of(2000,12,20))
+                .birthday(LocalDate.of(2000, 12, 20))
                 .build();
         userController.add(user);
         userController.update(user);
@@ -100,9 +100,9 @@ public class UserControllerTest {
                 .login("login")
                 .email("email@mail.ru")
                 .name("somename")
-                .birthday(LocalDate.of(2000,12,20))
+                .birthday(LocalDate.of(2000, 12, 20))
                 .build();
         userController.add(user);
-        Assertions.assertThrows(ValidationException.class,()-> userController.update(user));
+        Assertions.assertThrows(ValidationException.class, () -> userController.update(user));
     }
 }
