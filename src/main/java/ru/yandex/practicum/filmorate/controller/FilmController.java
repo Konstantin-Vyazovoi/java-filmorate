@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.excption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,6 +20,11 @@ public class FilmController {
     @GetMapping("/films")
     public ArrayList<Film> getFilms() {
         return new ArrayList<>(films.values());
+    }
+
+    @GetMapping("/films/{id}")
+    public Film getFilmById() {
+        return films.get(id);
     }
 
     @PostMapping("/films")

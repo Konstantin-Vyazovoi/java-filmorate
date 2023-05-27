@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.cassandra.CassandraProperties;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.excption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -16,9 +17,14 @@ public class UserController {
     private int id = 0;
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @GetMapping("/users")
+    @GetMapping("/user")
     public ArrayList<User> getUsers() {
         return new ArrayList<>(users.values());
+    }
+
+    @GetMapping("/users/{id}")
+    public User getUserById() {
+        return users.get(id);
     }
 
     @PutMapping(value = "/users")
