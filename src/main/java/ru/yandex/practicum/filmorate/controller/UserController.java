@@ -16,14 +16,9 @@ public class UserController {
     private int id = 0;
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @GetMapping("/users")
+    @GetMapping(value = "/users")
     public ArrayList<User> getUsers() {
         return new ArrayList<>(users.values());
-    }
-
-    @GetMapping("/users/{id}")
-    public User getUserById() {
-        return users.get(id);
     }
 
     @PutMapping(value = "/users")
@@ -43,16 +38,13 @@ public class UserController {
     @PostMapping(value = "/users")
     public User add(@RequestBody User user) throws ValidationException {
         validation(user);
-        User newUser;
-        if (user.getId() == 0) {
-            newUser = User.builder()
+        User newUser = User.builder()
                     .id(generateID())
                     .login(user.getLogin())
                     .email(user.getEmail())
                     .name(user.getName())
                     .birthday(user.getBirthday())
                     .build();
-        } else newUser = user;
         users.put(newUser.getId(), newUser);
         log.trace("Добавлен новый пользователь");
         return newUser;

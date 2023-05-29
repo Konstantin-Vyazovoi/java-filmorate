@@ -21,24 +21,16 @@ public class FilmController {
         return new ArrayList<>(films.values());
     }
 
-    @GetMapping("/films/{id}")
-    public Film getFilmById() {
-        return films.get(id);
-    }
-
     @PostMapping("/films")
     public Film add(@RequestBody Film film) throws ValidationException {
         validation(film);
-        Film newFilm;
-        if (film.getId() == 0) {
-            newFilm = Film.builder()
+        Film newFilm = Film.builder()
                     .id(generateID())
                     .name(film.getName())
                     .description(film.getDescription())
                     .duration(film.getDuration())
                     .releaseDate(film.getReleaseDate())
                     .build();
-        } else newFilm = film;
         films.put(newFilm.getId(), newFilm);
         log.trace("Добавлен новый фильм");
         return newFilm;
