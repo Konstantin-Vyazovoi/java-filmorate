@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 public interface UserStorage {
     public ArrayList<User> getUsers();
-    public void addUser();
-    public void updateUser();
-    public void deleteUser();
+    public User addUser(User user);
+    public User updateUser(User user);
+    public void deleteUser(User user);
+    public User getUserByID(int id);
 }

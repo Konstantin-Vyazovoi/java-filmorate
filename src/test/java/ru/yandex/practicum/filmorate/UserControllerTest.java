@@ -6,20 +6,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.excption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class UserControllerTest {
-    private final UserController userController = new UserController();
+    private final UserStorage userStorage = new InMemoryUserStorage();
+    private final UserController userController = new UserController(new UserService(userStorage));
 
 
     @Test
     void addNewUser() throws ValidationException {
-        assertTrue(userController.getUsersMap().isEmpty());
+        assertTrue(userStorage.getUsers().isEmpty());
         User user = User.builder()
                 .login("login")
                 .email("email@mail.ru")
@@ -27,7 +32,8 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(2000, 12, 20))
                 .build();
         userController.add(user);
-        assertTrue(userController.getUsersMap().containsKey(1));
+        ArrayList<User> userList = userStorage.getUsers();
+        assertTrue(userList.contains(userStorage.getUserByID(1)));
     }
 
     @Test
