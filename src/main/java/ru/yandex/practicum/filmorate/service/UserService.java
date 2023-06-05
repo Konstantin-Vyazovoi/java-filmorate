@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.excption.NotFoundException;
 import ru.yandex.practicum.filmorate.excption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
@@ -21,7 +23,7 @@ public class UserService {
 
     @Autowired
     public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
+        this.userStorage =  userStorage;
     }
 
     public User addFriend(int userID, int friendID) throws ValidationException {
@@ -29,7 +31,7 @@ public class UserService {
         HashSet<Integer> friendFriends = getFriendsSet(friendID);
         if (!userFriends.contains(friendID)) {
             userFriends.add(friendID);
-            friendFriends.add(friendID);
+            friendFriends.add(userID);
         }
         return userStorage.getUserByID(friendID);
     }
@@ -40,7 +42,7 @@ public class UserService {
         HashSet<Integer> friendFriends = getFriendsSet(friendID);
         if (!userFriends.contains(friendID)) {
             userFriends.remove(friendID);
-            friendFriends.remove(friendID);
+            friendFriends.remove(userID);
         }
         return userStorage.getUserByID(friendID);
     }
@@ -77,13 +79,17 @@ public class UserService {
         return new ArrayList<>(userStorage.getUsers());
     }
 
+    public User getUserById(int id) {
+        return userStorage.getUserByID(id);
+    }
+
     public User update(User user) throws ValidationException {
 
         validation(user);
         User updateUser = userStorage.updateUser(user);
         if (updateUser == null) {
             log.debug("Некорректный id пользователя");
-            throw new ValidationException("Такого пользователя нет");
+            throw new NotFoundException("Такого пользователя нет");
         }
         log.trace("Пользователь обновлён");
         return user;

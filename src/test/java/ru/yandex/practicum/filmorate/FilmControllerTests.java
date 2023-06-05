@@ -6,6 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.excption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 
@@ -13,7 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class FilmControllerTests {
-    private final FilmController filmController = new FilmController();
+    private final FilmStorage filmStorage = new InMemoryFilmStorage();
+    private final FilmService filmService = new FilmService(filmStorage);
+    private final FilmController filmController = new FilmController(filmService);
 
     @Test
     void addNewFilm() throws ValidationException {
@@ -25,7 +30,7 @@ class FilmControllerTests {
                 .duration(1000000)
                 .build();
         filmController.add(film);
-        assertTrue(filmController.getFilmMap().containsKey(1));
+        assertTrue(filmStorage.getFilms().contains(filmStorage.getFilmByID(1)));
     }
 
     @Test

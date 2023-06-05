@@ -10,5 +10,6 @@ public interface FilmStorage {
     public Film addFilm(Film film);
     public Film updateFilm(Film film);
     public void deleteFilm(Film film);
-
+    public Film getFilmByID(int ID);
+    int generateID();
 }
