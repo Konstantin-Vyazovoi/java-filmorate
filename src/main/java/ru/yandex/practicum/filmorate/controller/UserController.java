@@ -14,12 +14,12 @@ import java.util.HashMap;
 @RequestMapping("/users")
 public class UserController {
     private final HashMap<Integer, User> users = new HashMap<>();
-    private int id = 0;
+    private final int id = 0;
     private final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User add(@RequestBody User user){
+    public User add(@RequestBody User user) {
         return userService.add(user);
     }
 
@@ -46,7 +46,7 @@ public class UserController {
 
     @PutMapping(value = "/{id}/friends/{friendId}")
     public User addFriend(@PathVariable("id") Integer id,
-                          @PathVariable("friendId") Integer friendId){
+                          @PathVariable("friendId") Integer friendId) {
         return userService.addFriend(id, friendId);
     }
 

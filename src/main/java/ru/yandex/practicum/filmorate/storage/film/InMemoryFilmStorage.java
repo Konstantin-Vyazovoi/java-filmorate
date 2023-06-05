@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Component
-public class InMemoryFilmStorage implements FilmStorage{
+public class InMemoryFilmStorage implements FilmStorage {
     private final HashMap<Integer, Film> films = new HashMap<>();
 
     private int id = 0;
@@ -19,7 +19,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public void deleteFilm(Film film) {
-        if (films.containsKey(film.getId())){
+        if (films.containsKey(film.getId())) {
             films.remove(film.getId());
         } else throw new NotFoundException("Такого фильма не существует!");
     }
@@ -33,7 +33,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Film addFilm(Film film){
+    public Film addFilm(Film film) {
         Film newFilm = Film.builder()
                 .id(generateID())
                 .name(film.getName())
@@ -46,7 +46,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Film updateFilm(Film film){
+    public Film updateFilm(Film film) {
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
         } else throw new NotFoundException("Такого фильма не существует!");
