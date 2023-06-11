@@ -2,84 +2,68 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.excption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final HashMap<Integer, User> users = new HashMap<>();
-    private int id = 0;
+    private final int id = 0;
     private final Logger log = LoggerFactory.getLogger(UserController.class);
+    private final UserService userService;
 
-    @GetMapping(value = "/users")
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
     public ArrayList<User> getUsers() {
-        return new ArrayList<>(users.values());
+        return userService.getUsers();
     }
 
-    @PutMapping(value = "/users")
-    public User update(@RequestBody User user) throws ValidationException {
-
-        validation(user);
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-        } else {
-            log.debug("Некорректный id пользователя");
-            throw new ValidationException("Такого пользователя нет");
-        }
-        log.trace("Пользователь обновлён");
-        return user;
+    @PutMapping
+    public User update(@RequestBody User user) {
+        return userService.update(user);
     }
 
-    @PostMapping(value = "/users")
-    public User add(@RequestBody User user) throws ValidationException {
-        validation(user);
-        User newUser = User.builder()
-                    .id(generateID())
-                    .login(user.getLogin())
-                    .email(user.getEmail())
-                    .name(user.getName())
-                    .birthday(user.getBirthday())
-                    .build();
-        users.put(newUser.getId(), newUser);
-        log.trace("Добавлен новый пользователь");
-        return newUser;
+    @PostMapping
+    public User add(@RequestBody User user) {
+        return userService.add(user);
     }
 
-    public HashMap<Integer, User> getUsersMap() {
-        return users;
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable("id") Integer id) {
+        return userService.getUserById(id);
     }
 
-    private void validation(User user) throws ValidationException {
-        if (stringValidation(user.getLogin())) {
-            log.debug("Не корректный логин");
-            throw new ValidationException("Не корректный логин");
-        }
-        if (user.getEmail() == null || stringValidation(user.getEmail()) || !user.getEmail().contains("@")) {
-            log.debug("Не корректная электронная почта");
-            throw new ValidationException("Не корректная электронная почта");
-        }
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        } else if (user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())) {
-            log.debug("Не корректная дата рождения");
-            throw new ValidationException("Не корректная дата рождения");
-        }
+
+    @PutMapping(value = "/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable("id") Integer id,
+                          @PathVariable("friendId") Integer friendId) {
+        return userService.addFriend(id, friendId);
     }
 
-    private boolean stringValidation(String string) {
-        return string == null || string.isBlank() || string.contains(" ");
+    @DeleteMapping(value = "/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable("id") Integer id,
+                             @PathVariable("friendId") Integer friendId) {
+        userService.deleteFriend(id, friendId);
     }
 
-    private int generateID() {
-        id++;
-        return id;
+    @GetMapping("/{id}/friends")
+    public ArrayList<User> getFriendsList(@PathVariable("id") Integer id) {
+        return userService.getAllFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public ArrayList<User> getCommonFriendsList(@PathVariable("id") Integer id,
+                                                @PathVariable("otherId") Integer otherId) {
+        return userService.getCommonFriends(id, otherId);
     }
 }
