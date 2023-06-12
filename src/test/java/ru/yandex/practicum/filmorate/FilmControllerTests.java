@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.excption.NotFoundException;
 import ru.yandex.practicum.filmorate.excption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -99,7 +100,7 @@ class FilmControllerTests {
     }
 
     @Test
-    void updateFilmWithIncorrectID() throws ValidationException {
+    void updateFilmWithIncorrectID() throws NotFoundException {
         Film film = Film.builder()
                 .id(0)
                 .description("test description")
@@ -108,7 +109,7 @@ class FilmControllerTests {
                 .duration(1000000)
                 .build();
         filmController.add(film);
-        Assertions.assertThrows(ValidationException.class, () -> filmController.update(film));
+        Assertions.assertThrows(NotFoundException.class, () -> filmController.update(film));
     }
 
 }

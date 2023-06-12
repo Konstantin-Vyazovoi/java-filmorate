@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.excption.NotFoundException;
 import ru.yandex.practicum.filmorate.excption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -100,7 +101,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void updateUserWithIncorrectID() throws ValidationException {
+    void updateUserWithIncorrectID() throws NotFoundException {
         User user = User.builder()
                 .id(0)
                 .login("login")
@@ -109,6 +110,6 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(2000, 12, 20))
                 .build();
         userController.add(user);
-        Assertions.assertThrows(ValidationException.class, () -> userController.update(user));
+        Assertions.assertThrows(NotFoundException.class, () -> userController.update(user));
     }
 }
