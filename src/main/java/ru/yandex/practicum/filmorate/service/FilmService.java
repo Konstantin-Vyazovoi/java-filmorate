@@ -50,7 +50,7 @@ public class FilmService {
         Comparator<Film> comparator = new Comparator<Film>() {
             @Override
             public int compare(Film film1, Film film2) {
-                return film2.getLikesCount() - film1.getLikesCount();
+                return film2.getLikesIdSet().size() - film1.getLikesIdSet().size();
             }
         };
         Collections.sort(films, comparator);

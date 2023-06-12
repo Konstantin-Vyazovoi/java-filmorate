@@ -14,7 +14,6 @@ public class Film {
     private LocalDate releaseDate;
     private long duration;
     HashSet<Integer> likesIdSet = new HashSet<>();
-    private int likesCount = likesIdSet.size();
 
     @Builder
     public Film(int id, String description, String name, LocalDate releaseDate, long duration) {
