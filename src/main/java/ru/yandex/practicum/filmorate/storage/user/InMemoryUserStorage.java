@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Component
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
 
     private final HashMap<Integer, User> users = new HashMap<>();
     private int id = 0;
@@ -43,7 +43,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public void deleteUser(User user) {
-        if (user != null){
+        if (user != null) {
             users.remove(user.getId());
         }
     }
