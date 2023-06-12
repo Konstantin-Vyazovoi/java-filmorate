@@ -11,7 +11,10 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
 
 @Service
 public class FilmService {
@@ -44,15 +47,14 @@ public class FilmService {
         }
         if (count > films.size()) count = films.size();
         ArrayList<Film> mostPopular = new ArrayList<>();
-        Comparator<Film>  comparator= new Comparator<Film> ()
-        {
+        Comparator<Film> comparator = new Comparator<Film>() {
             @Override
             public int compare(Film film1, Film film2) {
-            return film2.getLikesCount() - film1.getLikesCount();
-        }
+                return film2.getLikesCount() - film1.getLikesCount();
+            }
         };
         Collections.sort(films, comparator);
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             mostPopular.add(films.get(i));
         }
         return mostPopular;
@@ -69,7 +71,7 @@ public class FilmService {
         return addFilm;
     }
 
-    public Film update(Film film){
+    public Film update(Film film) {
         validation(film);
         Film updateFilm = filmStorage.updateFilm(film);
         log.trace("Фильм с id {} обновлен", updateFilm.getId());

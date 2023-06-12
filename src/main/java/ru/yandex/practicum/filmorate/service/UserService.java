@@ -22,7 +22,7 @@ public class UserService {
 
     @Autowired
     public UserService(UserStorage userStorage) {
-        this.userStorage =  userStorage;
+        this.userStorage = userStorage;
     }
 
     public User addFriend(int userID, int friendID) throws ValidationException {
@@ -49,7 +49,7 @@ public class UserService {
     public ArrayList<User> getAllFriends(int userID) throws ValidationException {
         HashSet<Integer> userFriends = getFriendsSet(userID);
         ArrayList<User> friendsList = new ArrayList<>();
-        for (Integer friendID: userFriends) {
+        for (Integer friendID : userFriends) {
             User friend = userStorage.getUserByID(friendID);
             friendsList.add(friend);
         }
@@ -61,7 +61,7 @@ public class UserService {
         HashSet<Integer> otherUserFriends = getFriendsSet(otherUserID);
         Set<Integer> set = findCommonElements(userFriends, otherUserFriends);
         ArrayList<User> friendsList = new ArrayList<>();
-        for(Integer ID: set){
+        for (Integer ID : set) {
             User friend = userStorage.getUserByID(ID);
             friendsList.add(friend);
         }
@@ -102,7 +102,7 @@ public class UserService {
     }
 
     private void validation(User user) throws ValidationException {
-        if (user == null){
+        if (user == null) {
             log.debug("Пользователь не существует");
             throw new ValidationException("Пользователь не существует");
         }
