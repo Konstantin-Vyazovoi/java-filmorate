@@ -61,15 +61,15 @@ public class UserService {
         HashSet<Integer> otherUserFriends = getFriendsSet(otherUserID);
         Set<Integer> set = findCommonElements(userFriends, otherUserFriends);
         ArrayList<User> friendsList = new ArrayList<>();
-        for (Integer ID : set) {
-            User friend = userStorage.getUserByID(ID);
+        for (Integer id : set) {
+            User friend = userStorage.getUserByID(id);
             friendsList.add(friend);
         }
         return friendsList;
     }
 
-    private HashSet<Integer> getFriendsSet(int ID) throws ValidationException {
-        User user = userStorage.getUserByID(ID);
+    private HashSet<Integer> getFriendsSet(int id) throws ValidationException {
+        User user = userStorage.getUserByID(id);
         validation(user);
         return user.getFriends();
     }
