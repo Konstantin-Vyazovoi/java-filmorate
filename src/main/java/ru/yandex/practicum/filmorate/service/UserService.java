@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.excption.NotFoundException;
 import ru.yandex.practicum.filmorate.excption.ValidationException;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Primary
 public class UserService {
     private final UserStorage userStorage;
     private final Logger log = LoggerFactory.getLogger(UserService.class);

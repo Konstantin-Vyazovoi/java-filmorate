@@ -1,15 +1,20 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.excption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 @Component
+@Primary
 public class InMemoryFilmStorage implements FilmStorage {
     private final HashMap<Integer, Film> films = new HashMap<>();
+
+    private ArrayList<Film> popularFilms = new ArrayList<>();
 
     private int id = 0;
 
@@ -34,13 +39,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        Film newFilm = Film.builder()
-                .id(generateID())
-                .name(film.getName())
-                .description(film.getDescription())
-                .duration(film.getDuration())
-                .releaseDate(film.getReleaseDate())
-                .build();
+        Film newFilm = film.withId(generateID());
         films.put(newFilm.getId(), newFilm);
         return newFilm;
     }
@@ -53,6 +52,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
+
     public HashMap<Integer, Film> getFilmMap() {
         return films;
     }
@@ -61,5 +61,29 @@ public class InMemoryFilmStorage implements FilmStorage {
     public int generateID() {
         id++;
         return id;
+    }
+
+    @Override
+    public ArrayList<Film> getPopularFilms(Integer count) {
+        if (count == null) {
+            count = 10;
+        }
+        if (count > films.size()) count = films.size();
+        ArrayList<Film> mostPopular = new ArrayList<>();
+        Comparator<Film> comparator = new Comparator<Film>() {
+            @Override
+            public int compare(Film film1, Film film2) {
+                if (film1.getLikes() == 0 && film2.getLikes() == 0) {
+                    return film2.getId() - film1.getId();
+                }
+                return film2.getLikes() - film1.getLikes();
+            }
+        };
+        popularFilms = getFilms();
+        popularFilms.sort(comparator);
+        for (int i = 0; i < count; i++) {
+            mostPopular.add(popularFilms.get(i));
+        }
+        return mostPopular;
     }
 }

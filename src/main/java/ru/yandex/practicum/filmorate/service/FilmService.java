@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.excption.NotFoundException;
@@ -12,11 +13,10 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Set;
 
 @Service
+@Primary
 public class FilmService {
     private final FilmStorage filmStorage;
 
@@ -41,23 +41,7 @@ public class FilmService {
     }
 
     public ArrayList<Film> getPopularFilms(Integer count) {
-        ArrayList<Film> films = filmStorage.getFilms();
-        if (count == null) {
-            count = 10;
-        }
-        if (count > films.size()) count = films.size();
-        ArrayList<Film> mostPopular = new ArrayList<>();
-        Comparator<Film> comparator = new Comparator<Film>() {
-            @Override
-            public int compare(Film film1, Film film2) {
-                return film2.getLikesIdSet().size() - film1.getLikesIdSet().size();
-            }
-        };
-        Collections.sort(films, comparator);
-        for (int i = 0; i < count; i++) {
-            mostPopular.add(films.get(i));
-        }
-        return mostPopular;
+        return filmStorage.getPopularFilms(count);
     }
 
     public ArrayList<Film> getFilms() {

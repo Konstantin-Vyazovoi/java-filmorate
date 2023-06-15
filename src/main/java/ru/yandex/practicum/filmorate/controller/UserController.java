@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@RestController
+@RestController("inMemoryUserService")
 @RequestMapping("/users")
 public class UserController {
     private final HashMap<Integer, User> users = new HashMap<>();

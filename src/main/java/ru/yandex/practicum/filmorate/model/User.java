@@ -8,6 +8,7 @@ import java.util.HashSet;
 
 @Data
 public class User {
+
     private final int id;
     private String email;
     private String login;
@@ -24,4 +25,5 @@ public class User {
         this.birthday = birthday;
         this.friends = new HashSet<>();
     }
+
 }
