@@ -83,7 +83,7 @@ public class FilmService {
         }
     }
 
-    public Film getUserById(Integer id) {
+    public Film getFilmById(Integer id) {
         return filmStorage.getFilmByID(id);
     }
 }
