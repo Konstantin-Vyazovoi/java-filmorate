@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Hashtable;
 
 @Data
 public class User {
@@ -14,7 +15,7 @@ public class User {
     private String login;
     private String name;
     private LocalDate birthday;
-    private HashSet<Integer> friends;
+    private Hashtable<Integer, Boolean> friends;
 
     @Builder
     public User(int id, String email, String login, String name, LocalDate birthday) {
@@ -23,7 +24,7 @@ public class User {
         this.login = login;
         this.name = name;
         this.birthday = birthday;
-        this.friends = new HashSet<>();
+        this.friends = new Hashtable<>();
     }
 
 }

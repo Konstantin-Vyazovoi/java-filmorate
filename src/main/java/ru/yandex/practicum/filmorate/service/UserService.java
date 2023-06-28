@@ -73,7 +73,8 @@ public class UserService {
     private HashSet<Integer> getFriendsSet(int id) throws ValidationException {
         User user = userStorage.getUserByID(id);
         validation(user);
-        return user.getFriends();
+        HashSet<Integer> friends = (HashSet<Integer>) user.getFriends().keySet();
+        return friends;
     }
 
     public ArrayList<User> getUsers() {
