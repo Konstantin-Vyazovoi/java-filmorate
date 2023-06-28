@@ -14,17 +14,28 @@ public class Film {
     private String description;
     private LocalDate releaseDate;
     private long duration;
-    HashSet<Integer> likesIdSet = new HashSet<>();
+    private String raiting;
+    private HashSet<String> genre = new HashSet<>();
+    private HashSet<Integer> likesIdSet = new HashSet<>();
     private int likes = likesIdSet.size();
     @With
     private final int id;
 
     @Builder
-    public Film(String name, String description, LocalDate releaseDate, long duration, HashSet<Integer> likesIdSet, int likes, int id) {
+    public Film(String name,
+                String description,
+                String raiting,
+                HashSet<String> genre,
+                LocalDate releaseDate,
+                long duration,
+                HashSet<Integer> likesIdSet,
+                int likes,
+                int id) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.raiting = raiting;
         this.id = id;
     }
 }
