@@ -10,10 +10,9 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,19 +41,22 @@ public class UserDbStorage implements UserStorage{
                 "email", user.getEmail(),
                 "login", user.getLogin(),
                 "birthday", user.getBirthday().toString());
-        Integer id = insert.execute(params);
+        Integer id = (Integer) insert.executeAndReturnKey(params);
         user.setId(id);
         return user;
     }
 
     @Override
     public User updateUser(User user) {
-        jdbcTemplate.update("UPDATE USERS SET NAME = ?, " +
+        int update = jdbcTemplate.update("UPDATE USERS SET NAME = ?, " +
                 "EMAIL = ?," +
                 "LOGIN = ?," +
                 "BIRTHDAY = ? " +
                 "WHERE id = ?",
                 user.getName(), user.getEmail(), user.getLogin(), user.getBirthday(), user.getId());
+        if (update == 0) {
+            throw new NotFoundException("Такого пользователя нет");
+        }
         return user;
     }
 
@@ -65,7 +67,7 @@ public class UserDbStorage implements UserStorage{
 
     @Override
     public User getUserByID(Integer id) {
-        List<User> users = jdbcTemplate.query("select * from users where id = ?", rowMapperUser(), id);
+        List<User> users = getQuery("select * from users where id = ?", id);
         if (users.size() == 0) {
             throw new NotFoundException("Такого пользователя нет");
         }
@@ -74,32 +76,38 @@ public class UserDbStorage implements UserStorage{
 
     @Override
     public ArrayList<User> getCommonFriends(int userID, int otherUserID) {
-        return null;
+        List<User> users = jdbcTemplate.query("SELECT u.ID , u.NAME , u.EMAIL , u.LOGIN , u.BIRTHDAY " +
+                "FROM FRIENDS f JOIN USERS u ON f.FRIEND_ID = u.ID " +
+                "WHERE USER_ID IN (?, ?) AND FRIEND_ID NOT IN (?, ?) " +
+                "GROUP BY u.ID",
+                rowMapperUser(),
+                userID, otherUserID, userID, otherUserID);
+        return (ArrayList<User>) users;
     }
 
     @Override
     public ArrayList<User> getAllFriends(int userID) {
-        return null;
+        List<User> users = getQuery("SELECT u.ID, u.NAME, u.EMAIL, u.LOGIN, u.BIRTHDAY " +
+                "FROM FRIENDS f JOIN USERS u ON f.FRIEND_ID = u.ID " +
+                "WHERE f.USER_ID = ?", userID);
+        return (ArrayList<User>) users;
     }
 
     @Override
-    public User addFriend(int userID, int friendID) throws ValidationException {
-        return null;
+    public void addFriend(int userID, int friendID) throws ValidationException {
+        jdbcTemplate.update("INSERT INTO FRIENDS (USER_ID, FRIEND_ID) VALUES (?, ?)", userID, friendID);
+
     }
 
     @Override
-    public User deleteFriend(int userID, int friendID) {
-        return null;
+    public void deleteFriend(int userID, int friendID) {
+        jdbcTemplate.update("delete from friends where user_id = ? and friend_id = ?", userID, friendID);
     }
 
     private LocalDate dateToLocalDate(Date date) {
         LocalDate localDate = null;
         if (date != null) {
-            long year = date.getTime();
-            int m = date.getMonth();
-            int d = date.getDay();
-            int dat = date.getDate();
-            localDate = LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
+            localDate = date.toLocalDate();
         }
         return localDate;
     }
@@ -112,5 +120,9 @@ public class UserDbStorage implements UserStorage{
                 .name(rs.getString("name"))
                 .birthday(UserDbStorage.this.dateToLocalDate(rs.getDate("birthday")))
                 .build();
+    }
+
+    private List<User> getQuery(String sql, int id) {
+        return jdbcTemplate.query(sql, rowMapperUser(), id);
     }
 }

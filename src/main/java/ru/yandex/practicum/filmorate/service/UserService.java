@@ -12,9 +12,6 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Primary
@@ -27,19 +24,26 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User addFriend(int userID, int friendID) throws ValidationException {
-        return userStorage.addFriend(userID, friendID);
+    public void addFriend(int userID, int friendID) throws ValidationException {
+        idValidation(userID);
+        idValidation(friendID);
+        userStorage.addFriend(userID, friendID);
     }
 
-    public User deleteFriend(int userID, int friendID) throws ValidationException {
-        return userStorage.deleteFriend(userID, friendID);
+    public void deleteFriend(int userID, int friendID) throws ValidationException {
+        idValidation(userID);
+        idValidation(friendID);
+        userStorage.deleteFriend(userID, friendID);
     }
 
     public ArrayList<User> getAllFriends(int userID) throws ValidationException {
+        idValidation(userID);
         return userStorage.getAllFriends(userID);
     }
 
     public ArrayList<User> getCommonFriends(int userID, int otherUserID) throws ValidationException {
+        idValidation(userID);
+        idValidation(otherUserID);
         return userStorage.getCommonFriends(userID, otherUserID);
     }
 
@@ -48,6 +52,7 @@ public class UserService {
     }
 
     public User getUserById(int id) {
+        idValidation(id);
         return userStorage.getUserByID(id);
     }
 
@@ -98,5 +103,10 @@ public class UserService {
         return string == null || string.isBlank() || string.contains(" ");
     }
 
-
+    private void idValidation(int id) {
+        if (id <= 0) {
+            log.debug("Не корректный id");
+            throw new NotFoundException("Не корректный id");
+        }
+    }
 }

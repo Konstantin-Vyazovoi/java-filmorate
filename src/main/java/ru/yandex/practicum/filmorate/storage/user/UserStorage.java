@@ -21,7 +21,7 @@ public interface UserStorage {
 
     ArrayList<User> getAllFriends(int userID);
 
-    User addFriend(int userID, int friendID) throws ValidationException;
+    void addFriend(int userID, int friendID) throws ValidationException;
 
-    User deleteFriend(int userID, int friendID);
+    void deleteFriend(int userID, int friendID);
 }

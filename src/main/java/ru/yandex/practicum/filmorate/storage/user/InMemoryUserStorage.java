@@ -5,10 +5,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -66,18 +63,17 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User addFriend(int userID, int friendID) throws ValidationException {
+    public void addFriend(int userID, int friendID) throws ValidationException {
         HashSet<Integer> userFriends = getFriendsSet(userID);
         HashSet<Integer> friendFriends = getFriendsSet(friendID);
         if (!userFriends.contains(friendID)) {
             userFriends.add(friendID);
             friendFriends.add(userID);
         }
-        return getUserByID(friendID);
     }
 
     @Override
-    public User deleteFriend(int userID, int friendID) throws ValidationException {
+    public void deleteFriend(int userID, int friendID) throws ValidationException {
 
         HashSet<Integer> userFriends = getFriendsSet(userID);
         HashSet<Integer> friendFriends = getFriendsSet(friendID);
@@ -85,7 +81,6 @@ public class InMemoryUserStorage implements UserStorage {
             userFriends.remove(friendID);
             friendFriends.remove(userID);
         }
-        return getUserByID(friendID);
     }
 
     @Override

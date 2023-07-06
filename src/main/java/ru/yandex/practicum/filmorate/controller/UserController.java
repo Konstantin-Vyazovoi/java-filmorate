@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController("inMemoryUserService")
 @RequestMapping("/users")
@@ -45,9 +46,9 @@ public class UserController {
 
 
     @PutMapping(value = "/{id}/friends/{friendId}")
-    public User addFriend(@PathVariable("id") Integer id,
+    public void addFriend(@PathVariable("id") Integer id,
                           @PathVariable("friendId") Integer friendId) {
-        return userService.addFriend(id, friendId);
+        userService.addFriend(id, friendId);
     }
 
     @DeleteMapping(value = "/{id}/friends/{friendId}")
