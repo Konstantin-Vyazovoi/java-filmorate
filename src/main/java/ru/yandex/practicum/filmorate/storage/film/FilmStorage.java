@@ -15,7 +15,5 @@ public interface FilmStorage {
 
     Film getFilmByID(int id);
 
-    int generateID();
-
     ArrayList<Film> getPopularFilms(Integer count);
 }

@@ -3,14 +3,14 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Hashtable;
 
 @Data
 public class User {
 
-    private final int id;
+    private int id;
     private String email;
     private String login;
     private String name;
