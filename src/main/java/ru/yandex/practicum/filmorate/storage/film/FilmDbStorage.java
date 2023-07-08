@@ -114,7 +114,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public ArrayList<Film> getPopularFilms(Integer count) {
-        if (count == null | count <= 0) {
+        if (count == null || count <= 0) {
             count = 10;
         }
         List<Film> films = jdbcTemplate.query("SELECT f.ID, " +
