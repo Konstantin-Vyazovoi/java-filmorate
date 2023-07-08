@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
+import java.util.TreeSet;
 
 @Data
 public class Film {
@@ -13,17 +15,20 @@ public class Film {
     private String description;
     private LocalDate releaseDate;
     private long duration;
-    private String raiting;
-    private String genre;
+    private Mpa mpa;
+    private List<Genre> genres;
     private HashSet<Integer> likesIdSet = new HashSet<>();
     private int likes = likesIdSet.size();
-    private final int id;
+    private int id;
+
+    public Film() {
+    }
 
     @Builder
     public Film(String name,
                 String description,
-                String raiting,
-                String genre,
+                Mpa mpa,
+                List<Genre> genres,
                 LocalDate releaseDate,
                 long duration,
                 HashSet<Integer> likesIdSet,
@@ -33,8 +38,16 @@ public class Film {
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.raiting = raiting;
+        this.mpa = mpa;
         this.id = id;
+        this.genres = genres;
+    }
+
+    public String getGenreId() {
+        if (genres != null) {
+            return genres.toString();
+        }
+        return "null";
     }
 }
 

@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Set;
 
 @Service
 @Primary
@@ -28,16 +28,11 @@ public class FilmService {
     private final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     public void addLike(int filmID, int userID) {
-        Film film = filmStorage.getFilmByID(filmID);
-        Set likes = film.getLikesIdSet();
-        likes.add(userID);
+        filmStorage.addLike(filmID, userID);
     }
 
     public void deleteLike(int filmID, int userID) {
-        Film film = filmStorage.getFilmByID(filmID);
-        Set likes = film.getLikesIdSet();
-        if (!likes.contains(userID)) throw new NotFoundException("Такой пользователь не ставил лайк!");
-        likes.remove(userID);
+        filmStorage.deleteLike(filmID, userID);
     }
 
     public ArrayList<Film> getPopularFilms(Integer count) {
@@ -85,5 +80,21 @@ public class FilmService {
 
     public Film getFilmById(Integer id) {
         return filmStorage.getFilmByID(id);
+    }
+
+    public ArrayList<Genre> getGenres() {
+        return filmStorage.getGenres();
+    }
+
+    public Genre getGenresById(Integer id) {
+        return filmStorage.getGenresById(id);
+    }
+
+    public ArrayList<Mpa> getMpaList() {
+        return filmStorage.getMpaList();
+    }
+
+    public Mpa getMpaById(Integer id) {
+        return filmStorage.getMpaById(id);
     }
 }

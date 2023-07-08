@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.ArrayList;
 
-@RestController("inMemoryFilmService")
-@RequestMapping("/films")
+@RestController
+@RequestMapping
 public class FilmController {
     private final FilmService filmService;
 
@@ -18,41 +20,61 @@ public class FilmController {
         this.filmService = filmService;
     }
 
-    @GetMapping
+    @GetMapping("/films")
     public ArrayList<Film> getFilms() {
         return filmService.getFilms();
     }
 
-    @PostMapping
+    @PostMapping("/films")
     public Film add(@RequestBody Film film) throws ValidationException {
         return filmService.add(film);
     }
 
-    @PutMapping
+    @PutMapping("/films")
     public Film update(@RequestBody Film film) throws ValidationException {
         return filmService.update(film);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/films/{id}")
     public Film getUserById(@PathVariable("id") Integer id) {
         return filmService.getFilmById(id);
     }
 
-    @PutMapping("/{id}/like/{userId}")
+    @PutMapping("/films/{id}/like/{userId}")
     public void addLike(@PathVariable("id") Integer id,
                         @PathVariable("userId") Integer userId) {
         filmService.addLike(id, userId);
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
+    @DeleteMapping("/films/{id}/like/{userId}")
     public void deletLike(@PathVariable("id") Integer id,
                           @PathVariable("userId") Integer userId) {
         filmService.deleteLike(id, userId);
     }
 
-    @GetMapping("/popular")
+    @GetMapping("/films/popular")
     public ArrayList<Film> getMostPopularFilms(@RequestParam(required = false) Integer count) {
 
         return filmService.getPopularFilms(count);
+    }
+
+    @GetMapping("/genres")
+    public ArrayList<Genre> getGenres() {
+        return filmService.getGenres();
+    }
+
+    @GetMapping("/genres/{id}")
+    public Genre getGenresById(@PathVariable("id") Integer id) {
+        return filmService.getGenresById(id);
+    }
+
+    @GetMapping("/mpa")
+    public ArrayList<Mpa> getMpaList() {
+        return filmService.getMpaList();
+    }
+
+    @GetMapping("/mpa/{id}")
+    public Mpa getMpaById(@PathVariable("id") Integer id) {
+        return filmService.getMpaById(id);
     }
 }
