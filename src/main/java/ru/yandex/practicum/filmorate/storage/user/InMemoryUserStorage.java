@@ -5,7 +5,10 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -13,6 +16,10 @@ public class InMemoryUserStorage implements UserStorage {
 
     private final HashMap<Integer, User> users = new HashMap<>();
     private int id = 0;
+
+    private static Set<Integer> findCommonElements(Set<Integer> first, Set<Integer> second) {
+        return first.stream().filter(second::contains).collect(Collectors.toSet());
+    }
 
     @Override
     public ArrayList<User> getUsers() {
@@ -111,9 +118,5 @@ public class InMemoryUserStorage implements UserStorage {
         User user = getUserByID(id);
         HashSet<Integer> friends = (HashSet<Integer>) user.getFriends().keySet();
         return friends;
-    }
-
-    private static Set<Integer> findCommonElements(Set<Integer> first, Set<Integer> second) {
-        return first.stream().filter(second::contains).collect(Collectors.toSet());
     }
 }

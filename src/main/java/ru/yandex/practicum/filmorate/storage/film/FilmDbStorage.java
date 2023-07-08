@@ -13,11 +13,13 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @Primary
-public class FilmDbStorage implements FilmStorage{
+public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
@@ -63,11 +65,11 @@ public class FilmDbStorage implements FilmStorage{
     public Film updateFilm(Film film) {
         int update;
         update = jdbcTemplate.update(" UPDATE FILMS SET NAME = ?," +
-                " DESCRIPTION = ?, " +
-                "DURATION = ?, " +
-                "MPA_ID = ?, " +
-                "RELEASE_DATE = ? " +
-                "WHERE id = ?;",
+                        " DESCRIPTION = ?, " +
+                        "DURATION = ?, " +
+                        "MPA_ID = ?, " +
+                        "RELEASE_DATE = ? " +
+                        "WHERE id = ?;",
                 film.getName(),
                 film.getDescription(),
                 film.getDuration(),
@@ -89,20 +91,20 @@ public class FilmDbStorage implements FilmStorage{
     @Override
     public Film getFilmByID(int id) {
         List<Film> films = jdbcTemplate.query("SELECT f.ID, " +
-                "f.NAME, " +
-                "f.DESCRIPTION, " +
-                "f.DURATION, " +
-                "f.MPA_ID, " +
-                "f.RELEASE_DATE, " +
-                "m.NAME mpa_name, " +
-                "fg.GENRE_ID, " +
-                "g.NAME genre_name " +
-                "FROM films f JOIN mpa m on f.mpa_id = m.id " +
-                "LEFT JOIN films_genres fg on f.id = fg.film_id " +
-                "LEFT JOIN genres g on fg.genre_id = g.id " +
-                "where f.ID = ? " +
-                "GROUP BY f.ID, fg.GENRE_ID " +
-                "ORDER BY fg.GENRE_ID;",
+                        "f.NAME, " +
+                        "f.DESCRIPTION, " +
+                        "f.DURATION, " +
+                        "f.MPA_ID, " +
+                        "f.RELEASE_DATE, " +
+                        "m.NAME mpa_name, " +
+                        "fg.GENRE_ID, " +
+                        "g.NAME genre_name " +
+                        "FROM films f JOIN mpa m on f.mpa_id = m.id " +
+                        "LEFT JOIN films_genres fg on f.id = fg.film_id " +
+                        "LEFT JOIN genres g on fg.genre_id = g.id " +
+                        "where f.ID = ? " +
+                        "GROUP BY f.ID, fg.GENRE_ID " +
+                        "ORDER BY fg.GENRE_ID;",
                 rowMapperFilm(), id);
         if (films.size() == 0) {
             throw new NotFoundException("Такого фильма нет");
@@ -112,7 +114,7 @@ public class FilmDbStorage implements FilmStorage{
 
     @Override
     public ArrayList<Film> getPopularFilms(Integer count) {
-        if (count == null) {
+        if (count == null | count <= 0) {
             count = 10;
         }
         List<Film> films = jdbcTemplate.query("SELECT f.ID, " +
@@ -187,6 +189,11 @@ public class FilmDbStorage implements FilmStorage{
         return mpaList.get(0);
     }
 
+    public void deleteFilms() {
+        jdbcTemplate.update("DELETE FROM FILMS");
+        jdbcTemplate.update("DELETE FROM LIKES");
+    }
+
     private RowMapper<Film> rowMapperFilm() {
         return new RowMapper<Film>() {
             @Override
@@ -219,7 +226,7 @@ public class FilmDbStorage implements FilmStorage{
             jdbcTemplate.update(sql);
             if (film.getGenres().size() > 0) {
                 List<Genre> genres = new ArrayList<>();
-                for (Genre genre: film.getGenres()) {
+                for (Genre genre : film.getGenres()) {
                     if (!genres.contains(genre)) {
                         genres.add(genre);
                     }
@@ -243,7 +250,7 @@ public class FilmDbStorage implements FilmStorage{
     private void addGenres(Film film) {
         if (film.getGenres() != null && film.getGenres().size() > 0) {
             List<Genre> genres = new ArrayList<>();
-            for (Genre genre: film.getGenres()) {
+            for (Genre genre : film.getGenres()) {
                 if (!genres.contains(genre)) {
                     genres.add(genre);
                 }
@@ -251,7 +258,7 @@ public class FilmDbStorage implements FilmStorage{
             int i = genres.size();
             String sql = "INSERT INTO FILMS_GENRES (film_id, GENRE_ID) VALUES ";
             for (Genre genre : genres) {
-                sql += "(" + String.valueOf(film.getId()) + ", " + String.valueOf(genre.getId()) + ")";
+                sql += "(" + film.getId() + ", " + genre.getId() + ")";
                 --i;
                 if (i > 0) {
                     sql += ", ";

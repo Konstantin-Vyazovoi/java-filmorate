@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Component
 @Primary
-public class UserDbStorage implements UserStorage{
+public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -49,10 +49,10 @@ public class UserDbStorage implements UserStorage{
     @Override
     public User updateUser(User user) {
         int update = jdbcTemplate.update("UPDATE USERS SET NAME = ?, " +
-                "EMAIL = ?," +
-                "LOGIN = ?," +
-                "BIRTHDAY = ? " +
-                "WHERE id = ?",
+                        "EMAIL = ?," +
+                        "LOGIN = ?," +
+                        "BIRTHDAY = ? " +
+                        "WHERE id = ?",
                 user.getName(), user.getEmail(), user.getLogin(), user.getBirthday(), user.getId());
         if (update == 0) {
             throw new NotFoundException("Такого пользователя нет");
@@ -77,9 +77,9 @@ public class UserDbStorage implements UserStorage{
     @Override
     public ArrayList<User> getCommonFriends(int userID, int otherUserID) {
         List<User> users = jdbcTemplate.query("SELECT u.ID , u.NAME , u.EMAIL , u.LOGIN , u.BIRTHDAY " +
-                "FROM FRIENDS f JOIN USERS u ON f.FRIEND_ID = u.ID " +
-                "WHERE USER_ID IN (?, ?) AND FRIEND_ID NOT IN (?, ?) " +
-                "GROUP BY u.ID",
+                        "FROM FRIENDS f JOIN USERS u ON f.FRIEND_ID = u.ID " +
+                        "WHERE USER_ID IN (?, ?) AND FRIEND_ID NOT IN (?, ?) " +
+                        "GROUP BY u.ID",
                 rowMapperUser(),
                 userID, otherUserID, userID, otherUserID);
         return (ArrayList<User>) users;
@@ -104,6 +104,10 @@ public class UserDbStorage implements UserStorage{
         jdbcTemplate.update("delete from friends where user_id = ? and friend_id = ?", userID, friendID);
     }
 
+    public void deleteUsers() {
+        jdbcTemplate.update("delete from users");
+    }
+
     private LocalDate dateToLocalDate(Date date) {
         LocalDate localDate = null;
         if (date != null) {
@@ -118,7 +122,7 @@ public class UserDbStorage implements UserStorage{
                 .email(rs.getString("email"))
                 .login(rs.getString("login"))
                 .name(rs.getString("name"))
-                .birthday(UserDbStorage.this.dateToLocalDate(rs.getDate("birthday")))
+                .birthday(rs.getDate("birthday").toLocalDate())
                 .build();
     }
 

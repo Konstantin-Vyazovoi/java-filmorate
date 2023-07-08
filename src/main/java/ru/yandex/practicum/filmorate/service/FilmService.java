@@ -19,13 +19,12 @@ import java.util.ArrayList;
 @Primary
 public class FilmService {
     private final FilmStorage filmStorage;
+    private final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     @Autowired
     public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
-
-    private final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     public void addLike(int filmID, int userID) {
         filmStorage.addLike(filmID, userID);
