@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.SneakyThrows;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -12,13 +12,12 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Component
-@Primary
+@Qualifier("filmDbStorage")
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
 
@@ -63,8 +62,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        int update;
-        update = jdbcTemplate.update(" UPDATE FILMS SET NAME = ?," +
+        int update = jdbcTemplate.update(" UPDATE FILMS SET NAME = ?," +
                         " DESCRIPTION = ?, " +
                         "DURATION = ?, " +
                         "MPA_ID = ?, " +
@@ -106,7 +104,7 @@ public class FilmDbStorage implements FilmStorage {
                         "GROUP BY f.ID, fg.GENRE_ID " +
                         "ORDER BY fg.GENRE_ID;",
                 rowMapperFilm(), id);
-        if (films.size() == 0) {
+        if (films.isEmpty()) {
             throw new NotFoundException("Такого фильма нет");
         }
         return getFilmsFromQuery(films).get(0);
@@ -166,7 +164,7 @@ public class FilmDbStorage implements FilmStorage {
     public Genre getGenresById(Integer id) {
         List<Genre> genres = jdbcTemplate.query("SELECT * FROM GENRES WHERE ID = ?",
                 (rs, rowNum) -> new Genre(rs.getInt("ID"), rs.getString("NAME")), id);
-        if (genres.size() == 0) {
+        if (genres.isEmpty()) {
             throw new NotFoundException("Такого жанра нет");
         }
         return genres.get(0);
@@ -183,7 +181,7 @@ public class FilmDbStorage implements FilmStorage {
     public Mpa getMpaById(Integer id) {
         List<Mpa> mpaList = jdbcTemplate.query("SELECT * FROM MPA WHERE ID = ?",
                 (rs, rowNum) -> new Mpa(rs.getInt("ID"), rs.getString("NAME")), id);
-        if (mpaList.size() == 0) {
+        if (mpaList.isEmpty()) {
             throw new NotFoundException("Такого рейтинга нет");
         }
         return mpaList.get(0);
@@ -195,21 +193,18 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private RowMapper<Film> rowMapperFilm() {
-        return new RowMapper<Film>() {
-            @Override
-            public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Film film = new Film();
-                film.setId(rs.getInt("id"));
-                film.setName(rs.getString("name"));
-                film.setDescription(rs.getString("description"));
-                film.setDuration(rs.getLong("duration"));
-                film.setReleaseDate(rs.getDate("release_date").toLocalDate());
-                film.setMpa(new Mpa(rs.getInt("mpa_id"), rs.getString("mpa_name")));
-                if (rs.getInt("genre_id") > 0) {
-                    film.setGenres(FilmDbStorage.this.newGenre(rs, film));
-                } else film.setGenres(new ArrayList<>());
-                return film;
-            }
+        return (rs, rowNum) -> {
+            Film film = new Film();
+            film.setId(rs.getInt("id"));
+            film.setName(rs.getString("name"));
+            film.setDescription(rs.getString("description"));
+            film.setDuration(rs.getLong("duration"));
+            film.setReleaseDate(rs.getDate("release_date").toLocalDate());
+            film.setMpa(new Mpa(rs.getInt("mpa_id"), rs.getString("mpa_name")));
+            if (rs.getInt("genre_id") > 0) {
+                film.setGenres(FilmDbStorage.this.newGenre(rs, film));
+            } else film.setGenres(new ArrayList<>());
+            return film;
         };
     }
 
@@ -222,10 +217,10 @@ public class FilmDbStorage implements FilmStorage {
 
     private void updateGenres(Film film) {
         if (film.getGenres() != null) {
-            String sql = "DELETE FROM FILMS_GENRES WHERE FILM_ID = " + film.getId();
-            jdbcTemplate.update(sql);
-            if (film.getGenres().size() > 0) {
+            jdbcTemplate.update("DELETE FROM FILMS_GENRES WHERE FILM_ID = ?", film.getId());
+            if (!film.getGenres().isEmpty()) {
                 List<Genre> genres = new ArrayList<>();
+                String sql = "MERGE INTO FILMS_GENRES (film_id, GENRE_ID) VALUES ";
                 for (Genre genre : film.getGenres()) {
                     if (!genres.contains(genre)) {
                         genres.add(genre);
@@ -233,13 +228,11 @@ public class FilmDbStorage implements FilmStorage {
                 }
                 film.setGenres(genres);
                 int i = genres.size();
-                sql = "MERGE INTO FILMS_GENRES (film_id, GENRE_ID) VALUES ";
                 for (Genre genre : genres) {
                     sql += "(" + film.getId() + ", " + genre.getId() + ")";
                     --i;
                     if (i > 0) {
                         sql += ", ";
-
                     }
                 }
                 jdbcTemplate.update(sql);

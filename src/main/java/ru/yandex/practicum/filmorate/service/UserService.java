@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -14,34 +14,34 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Service
-@Primary
 public class UserService {
+
     private final UserStorage userStorage;
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
-    public void addFriend(int userID, int friendID) throws ValidationException {
+    public void addFriend(int userID, int friendID) {
         idValidation(userID);
         idValidation(friendID);
         userStorage.addFriend(userID, friendID);
     }
 
-    public void deleteFriend(int userID, int friendID) throws ValidationException {
+    public void deleteFriend(int userID, int friendID) {
         idValidation(userID);
         idValidation(friendID);
         userStorage.deleteFriend(userID, friendID);
     }
 
-    public ArrayList<User> getAllFriends(int userID) throws ValidationException {
+    public ArrayList<User> getAllFriends(int userID) {
         idValidation(userID);
         return userStorage.getAllFriends(userID);
     }
 
-    public ArrayList<User> getCommonFriends(int userID, int otherUserID) throws ValidationException {
+    public ArrayList<User> getCommonFriends(int userID, int otherUserID) {
         idValidation(userID);
         idValidation(otherUserID);
         return userStorage.getCommonFriends(userID, otherUserID);
@@ -56,7 +56,7 @@ public class UserService {
         return userStorage.getUserByID(id);
     }
 
-    public User update(User user) throws ValidationException {
+    public User update(User user) {
 
         validation(user);
         User updateUser = userStorage.updateUser(user);
@@ -68,14 +68,14 @@ public class UserService {
         return user;
     }
 
-    public User add(User user) throws ValidationException {
+    public User add(User user) {
         validation(user);
         User newUser = userStorage.addUser(user);
         log.trace("Добавлен новый пользователь");
         return newUser;
     }
 
-    private void validation(User user) throws ValidationException {
+    private void validation(User user) {
         if (user == null) {
             log.debug("Пользователь не существует");
             throw new ValidationException("Пользователь не существует");

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.controller.GenreController;
+import ru.yandex.practicum.filmorate.controller.MpaController;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -30,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class FilmDbStorageTest {
     private final FilmDbStorage filmStorage;
     private final FilmController filmController;
+    private final MpaController mpaController;
+    private final GenreController genreController;
 
     private final UserDbStorage userStorage;
     private final UserController userController;
@@ -195,7 +199,7 @@ class FilmDbStorageTest {
 
     @Test
     void getAllGenres() {
-        List<Genre> genres = filmController.getGenres();
+        List<Genre> genres = genreController.getGenres();
         List<Genre> genreList = new ArrayList<>();
         genreList.addAll(List.of(new Genre(1, "Комедия"),
                 new Genre(2, "Драма"),
@@ -208,19 +212,19 @@ class FilmDbStorageTest {
 
     @Test
     void getGenreByIdWithCorectId() {
-        Genre genre = filmController.getGenresById(3);
+        Genre genre = genreController.getGenresById(3);
         Genre genre3 = new Genre(3, "Мультфильм");
         assertEquals(genre, genre3);
     }
 
     @Test
     void getGenreByIdWithIncorectId() {
-        assertThrows(NotFoundException.class, () -> filmController.getGenresById(99));
+        assertThrows(NotFoundException.class, () -> genreController.getGenresById(99));
     }
 
     @Test
     void getAllMpa() {
-        List<Mpa> rates = filmController.getMpaList();
+        List<Mpa> rates = mpaController.getMpaList();
         List<Mpa> mpaList = new ArrayList<>();
         mpaList.addAll(List.of(new Mpa(1, "G"),
                 new Mpa(2, "PG"),
@@ -232,14 +236,14 @@ class FilmDbStorageTest {
 
     @Test
     void getMpaByIdWithCorectId() {
-        Mpa mpa = filmController.getMpaById(5);
+        Mpa mpa = mpaController.getMpaById(5);
         Mpa mpa5 = new Mpa(5, "NC-17");
         assertEquals(mpa, mpa5);
     }
 
     @Test
     void getMpaByIdWithIncorectId() {
-        assertThrows(NotFoundException.class, () -> filmController.getMpaById(99));
+        assertThrows(NotFoundException.class, () -> mpaController.getMpaById(99));
     }
 
 }

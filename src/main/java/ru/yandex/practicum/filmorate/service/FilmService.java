@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -16,13 +16,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Service
-@Primary
 public class FilmService {
+
     private final FilmStorage filmStorage;
     private final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -56,7 +56,7 @@ public class FilmService {
         return updateFilm;
     }
 
-    private void validation(Film film) throws ValidationException {
+    private void validation(Film film) {
         LocalDate oldDate = LocalDate.of(1965, 12, 28);
         LocalDate filmDate = film.getReleaseDate();
         if (film.getName() == null || film.getName().isBlank()) {

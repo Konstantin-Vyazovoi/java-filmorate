@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -10,14 +10,12 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Component
-@Primary
+@Qualifier("userDbStorage")
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
@@ -68,7 +66,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User getUserByID(Integer id) {
         List<User> users = getQuery("select * from users where id = ?", id);
-        if (users.size() == 0) {
+        if (users.isEmpty()) {
             throw new NotFoundException("Такого пользователя нет");
         }
         return users.get(0);
@@ -106,14 +104,6 @@ public class UserDbStorage implements UserStorage {
 
     public void deleteUsers() {
         jdbcTemplate.update("delete from users");
-    }
-
-    private LocalDate dateToLocalDate(Date date) {
-        LocalDate localDate = null;
-        if (date != null) {
-            localDate = date.toLocalDate();
-        }
-        return localDate;
     }
 
     private RowMapper<User> rowMapperUser() {
