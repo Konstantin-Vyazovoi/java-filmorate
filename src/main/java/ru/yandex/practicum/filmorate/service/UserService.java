@@ -3,77 +3,48 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.excption.NotFoundException;
-import ru.yandex.practicum.filmorate.excption.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
-@Primary
 public class UserService {
+
     private final UserStorage userStorage;
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
-    public User addFriend(int userID, int friendID) throws ValidationException {
-        HashSet<Integer> userFriends = getFriendsSet(userID);
-        HashSet<Integer> friendFriends = getFriendsSet(friendID);
-        if (!userFriends.contains(friendID)) {
-            userFriends.add(friendID);
-            friendFriends.add(userID);
-        }
-        return userStorage.getUserByID(friendID);
+    public void addFriend(int userID, int friendID) {
+        idValidation(userID);
+        idValidation(friendID);
+        userStorage.addFriend(userID, friendID);
     }
 
-    public User deleteFriend(int userID, int friendID) throws ValidationException {
-
-        HashSet<Integer> userFriends = getFriendsSet(userID);
-        HashSet<Integer> friendFriends = getFriendsSet(friendID);
-        if (!userFriends.contains(friendID)) {
-            userFriends.remove(friendID);
-            friendFriends.remove(userID);
-        }
-        return userStorage.getUserByID(friendID);
+    public void deleteFriend(int userID, int friendID) {
+        idValidation(userID);
+        idValidation(friendID);
+        userStorage.deleteFriend(userID, friendID);
     }
 
-    public ArrayList<User> getAllFriends(int userID) throws ValidationException {
-        HashSet<Integer> userFriends = getFriendsSet(userID);
-        ArrayList<User> friendsList = new ArrayList<>();
-        for (Integer friendID : userFriends) {
-            User friend = userStorage.getUserByID(friendID);
-            friendsList.add(friend);
-        }
-        return friendsList;
+    public ArrayList<User> getAllFriends(int userID) {
+        idValidation(userID);
+        return userStorage.getAllFriends(userID);
     }
 
-    public ArrayList<User> getCommonFriends(int userID, int otherUserID) throws ValidationException {
-        HashSet<Integer> userFriends = getFriendsSet(userID);
-        HashSet<Integer> otherUserFriends = getFriendsSet(otherUserID);
-        Set<Integer> set = findCommonElements(userFriends, otherUserFriends);
-        ArrayList<User> friendsList = new ArrayList<>();
-        for (Integer id : set) {
-            User friend = userStorage.getUserByID(id);
-            friendsList.add(friend);
-        }
-        return friendsList;
-    }
-
-    private HashSet<Integer> getFriendsSet(int id) throws ValidationException {
-        User user = userStorage.getUserByID(id);
-        validation(user);
-        return user.getFriends();
+    public ArrayList<User> getCommonFriends(int userID, int otherUserID) {
+        idValidation(userID);
+        idValidation(otherUserID);
+        return userStorage.getCommonFriends(userID, otherUserID);
     }
 
     public ArrayList<User> getUsers() {
@@ -81,10 +52,11 @@ public class UserService {
     }
 
     public User getUserById(int id) {
+        idValidation(id);
         return userStorage.getUserByID(id);
     }
 
-    public User update(User user) throws ValidationException {
+    public User update(User user) {
 
         validation(user);
         User updateUser = userStorage.updateUser(user);
@@ -96,14 +68,14 @@ public class UserService {
         return user;
     }
 
-    public User add(User user) throws ValidationException {
+    public User add(User user) {
         validation(user);
         User newUser = userStorage.addUser(user);
         log.trace("Добавлен новый пользователь");
         return newUser;
     }
 
-    private void validation(User user) throws ValidationException {
+    private void validation(User user) {
         if (user == null) {
             log.debug("Пользователь не существует");
             throw new ValidationException("Пользователь не существует");
@@ -131,7 +103,10 @@ public class UserService {
         return string == null || string.isBlank() || string.contains(" ");
     }
 
-    private static Set<Integer> findCommonElements(Set<Integer> first, Set<Integer> second) {
-        return first.stream().filter(second::contains).collect(Collectors.toSet());
+    private void idValidation(int id) {
+        if (id <= 0) {
+            log.debug("Не корректный id");
+            throw new NotFoundException("Не корректный id");
+        }
     }
 }

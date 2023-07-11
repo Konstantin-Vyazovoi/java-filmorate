@@ -1,16 +1,17 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.excption.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Set;
 
 @Component
-@Primary
 public class InMemoryFilmStorage implements FilmStorage {
     private final HashMap<Integer, Film> films = new HashMap<>();
 
@@ -39,7 +40,16 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        Film newFilm = film.withId(generateID());
+        Film newFilm = Film.builder()
+                .id(generateID())
+                .description(film.getDescription())
+                .duration(film.getDuration())
+                .name(film.getName())
+                .releaseDate(film.getReleaseDate())
+                .genres(film.getGenres())
+                .likesIdSet(film.getLikesIdSet())
+                .mpa(film.getMpa())
+                .build();
         films.put(newFilm.getId(), newFilm);
         return newFilm;
     }
@@ -57,7 +67,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films;
     }
 
-    @Override
     public int generateID() {
         id++;
         return id;
@@ -85,5 +94,38 @@ public class InMemoryFilmStorage implements FilmStorage {
             mostPopular.add(popularFilms.get(i));
         }
         return mostPopular;
+    }
+
+    public void addLike(int filmID, int userID) {
+        Film film = getFilmByID(filmID);
+        Set likes = film.getLikesIdSet();
+        likes.add(userID);
+    }
+
+    public void deleteLike(int filmID, int userID) {
+        Film film = getFilmByID(filmID);
+        Set likes = film.getLikesIdSet();
+        if (!likes.contains(userID)) throw new NotFoundException("Такой пользователь не ставил лайк!");
+        likes.remove(userID);
+    }
+
+    @Override
+    public ArrayList<Genre> getGenres() {
+        return null;
+    }
+
+    @Override
+    public Genre getGenresById(Integer id) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Mpa> getMpaList() {
+        return null;
+    }
+
+    @Override
+    public Mpa getMpaById(Integer id) {
+        return null;
     }
 }
